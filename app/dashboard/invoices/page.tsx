@@ -3,7 +3,10 @@ import { CreateInvoice } from '@/app/ui/invoices/buttons';
 import Search from '@/app/ui/search';
 import { Suspense } from 'react';
 import Table from '@/app/ui/invoices/table';
+import { fetchInvoicesPages } from '@/app/lib/data';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import Pagination from '@/app/ui/invoices/pagination';
+
 export default async function Invoices({
   searchParams,
 }: {
@@ -14,6 +17,8 @@ export default async function Invoices({
 }) {
   const query = searchParams?.query || '';
   const CurrentPage = Number(searchParams?.page) || 1;
+  const totalPages=await fetchInvoicesPages(query);
+  
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -27,7 +32,9 @@ export default async function Invoices({
         <Table query={query} currentPage={CurrentPage} />
       </Suspense>
 
-      <div className="mt-5 flex w-full justify-center"></div>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages}/>
+      </div>
     </div>
   );
 }
